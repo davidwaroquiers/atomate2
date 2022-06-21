@@ -13,9 +13,8 @@ from abipy.abio.factories import (
 )
 from abipy.abio.input_tags import MOLECULAR_DYNAMICS, NSCF, RELAX, SCF
 
-from atomate2.abinit.files import load_abinit_input
+from atomate2.abinit.files import get_final_structure, load_abinit_input
 from atomate2.abinit.sets.base import AbinitInputGenerator
-from atomate2.abinit.utils.common import get_final_structure
 
 __all__ = [
     "StaticSetGenerator",
@@ -111,7 +110,8 @@ class NonSCFSetGenerator(AbinitInputGenerator):
 
     calc_type: str = "nscf"
 
-    nbands_factor: float = 1.2
+    nbands_factor: Optional[float] = 1.2
+    nband: Optional[int] = None
     accuracy: str = "normal"
 
     # TODO: how to switch between ndivsm and line_density determination of kpoints ?
@@ -158,6 +158,7 @@ class NonSCFSetGenerator(AbinitInputGenerator):
         pseudos=None,
         prev_outputs=None,
         nbands_factor=nbands_factor,
+        nband=nband,
         accuracy=accuracy,
         ndivsm=ndivsm,
         kppa=kppa,
@@ -191,13 +192,14 @@ class NonSCFSetGenerator(AbinitInputGenerator):
                     "Structure is provided in non-SCF input set generator but "
                     "is not the same as the one from the previous (SCF) input set."
                 )
-        nband = previous_abinit_input.get(
-            "nband",
-            previous_abinit_input.structure.num_valence_electrons(
-                previous_abinit_input.pseudos
-            ),
-        )
-        nband = int(np.ceil(nband * nbands_factor))
+        if nbands_factor is not None:
+            nband = previous_abinit_input.get(
+                "nband",
+                previous_abinit_input.structure.num_valence_electrons(
+                    previous_abinit_input.pseudos
+                ),
+            )
+            nband = int(np.ceil(nband * nbands_factor))
         if mode == "line":
             return ebands_from_gsinput(
                 gs_input=previous_abinit_input,

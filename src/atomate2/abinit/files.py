@@ -7,11 +7,14 @@ import os
 from pathlib import Path
 from typing import Iterable, Tuple, Union
 
-from abipy.flowtk.utils import abi_extensions
+from abipy.abio.input_tags import MOLECULAR_DYNAMICS, RELAX
+from abipy.abio.outputs import AbinitOutputFile
+from abipy.electrons import GsrFile
+from abipy.flowtk.utils import Directory, File, abi_extensions
 from monty.serialization import loadfn
 from pymatgen.core.structure import Structure
 
-from atomate2.abinit.utils.common import INDIR_NAME
+from atomate2.abinit.utils.common import INDIR_NAME, OUTDIR_NAME, OUTPUT_FILE_NAME
 from atomate2.utils.file_client import FileClient, auto_fileclient
 
 __all__ = [
@@ -138,3 +141,31 @@ def write_abinit_input_set(
         raise RuntimeError("AbinitInputSet is not valid.")
 
     ais.write_input(directory=directory, make_dir=True, overwrite=False)
+
+
+def get_final_structure(dir_name):
+    """Get the final/last structure of a calculation in a given directory.
+
+    This functions tries to get the structure:
+    1. from the output file of abinit (run.abo).
+    2. from the gsr file of abinit (out_GSR.nc).
+    """
+    out_path = File(os.path.join(dir_name, OUTPUT_FILE_NAME))
+    if out_path.exists:
+        try:
+            ab_out = AbinitOutputFile.from_file(out_path.path)
+            return ab_out.final_structure
+        except Exception:
+            pass
+    gsr_path = Directory(os.path.join(dir_name, OUTDIR_NAME)).has_abiext("GSR")
+    if gsr_path:
+        # Open the GSR file.
+        try:
+            gsr_file = GsrFile(gsr_path)
+            return gsr_file.structure
+        except Exception:
+            pass
+    abinit_input = load_abinit_input(dirpath=dir_name)
+    if len({MOLECULAR_DYNAMICS, RELAX}.intersection(abinit_input.runlevel)) == 0:
+        return abinit_input.structure
+    raise RuntimeError("Could not get final structure.")

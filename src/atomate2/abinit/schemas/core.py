@@ -12,14 +12,13 @@ from jobflow.utils import ValueEnum
 from pydantic import BaseModel, Field
 from pymatgen.core.structure import Structure
 
-from atomate2.abinit.files import load_abinit_input
+from atomate2.abinit.files import get_final_structure, load_abinit_input
 from atomate2.abinit.sets.base import AbinitInputSet
 from atomate2.abinit.utils.common import (
     LOG_FILE_NAME,
     MPIABORTFILE,
     OUTPUT_FILE_NAME,
     get_event_report,
-    get_final_structure,
 )
 from atomate2.common.schemas.structure import StructureMetadata
 

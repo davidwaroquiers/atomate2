@@ -17,7 +17,12 @@ from pymatgen.io.abinit.abiobjects import KSampling
 from pymatgen.io.abinit.pseudos import PseudoTable
 from pymatgen.io.core import InputGenerator, InputSet
 
-from atomate2.abinit.files import fname2ext, load_abinit_input, out_to_in
+from atomate2.abinit.files import (
+    fname2ext,
+    get_final_structure,
+    load_abinit_input,
+    out_to_in,
+)
 from atomate2.abinit.utils.common import (
     INDATA_PREFIX,
     INDATAFILE_PREFIX,
@@ -29,7 +34,6 @@ from atomate2.abinit.utils.common import (
     TMPDATA_PREFIX,
     TMPDIR_NAME,
     InitializationError,
-    get_final_structure,
 )
 
 __all__ = ["AbinitInputSet", "AbinitInputGenerator"]

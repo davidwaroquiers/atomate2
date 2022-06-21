@@ -47,7 +47,7 @@ class NonSCFMaker(BaseAbinitMaker):
     calc_type: str = "nscf"
     name: str = "non-Scf calculation"
 
-    input_set_generator: NonSCFSetGenerator = NonSCFSetGenerator()
+    input_set_generator: NonSCFSetGenerator = field(default_factory=NonSCFSetGenerator)
 
     # Non dataclass variables:
     CRITICAL_EVENTS: ClassVar[Sequence[str]] = ("NscfConvergenceWarning",)

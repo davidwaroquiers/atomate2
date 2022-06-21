@@ -3,10 +3,8 @@
 import logging
 import os
 
-from abipy.abio.outputs import AbinitOutputFile
-from abipy.electrons.gsr import GsrFile
 from abipy.flowtk import events
-from abipy.flowtk.utils import Directory, File
+from abipy.flowtk.utils import Directory
 from monty.json import MSONable
 from monty.serialization import MontyDecoder
 from pymatgen.util.serialization import pmg_serialize
@@ -322,31 +320,6 @@ class RestartInfo(MSONable):
     def prev_indir(self):
         """Get the Directory pointing to the input directory of the previous step."""
         return Directory(os.path.join(self.previous_dir, INDIR_NAME))
-
-
-def get_final_structure(dir_name):
-    """Get the final/last structure of a calculation in a given directory.
-
-    This functions tries to get the structure:
-    1. from the output file of abinit (run.abo).
-    2. from the gsr file of abinit (out_GSR.nc).
-    """
-    out_path = File(os.path.join(dir_name, OUTPUT_FILE_NAME))
-    if out_path.exists:
-        try:
-            ab_out = AbinitOutputFile.from_file(out_path.path)
-            return ab_out.final_structure
-        except Exception:
-            pass
-    gsr_path = Directory(os.path.join(dir_name, OUTDIR_NAME)).has_abiext("GSR")
-    if gsr_path:
-        # Open the GSR file.
-        try:
-            gsr_file = GsrFile(gsr_path)
-            return gsr_file.structure
-        except Exception:
-            pass
-    raise RuntimeError("Could not get final structure.")
 
 
 def get_event_report(ofile, mpiabort_file):
