@@ -1,4 +1,4 @@
-"""Module defining core Abinit input set generators."""
+"""Module defining Abinit input set generators specific to GW calculations."""
 
 from dataclasses import dataclass
 from typing import Optional
@@ -11,6 +11,7 @@ from atomate2.abinit.sets.base import AbinitInputGenerator
 
 __all__ = [
     "ScreeningSetGenerator",
+    "SigmaSetGenerator",
 ]
 
 
@@ -162,7 +163,7 @@ class SigmaSetGenerator(AbinitInputGenerator):
             ecutsigx=ecutsigx,
             ppmodel=ppmodel,
             gw_qprange=gw_qprange,
-            accuracy="normal",
+            accuracy=accuracy,
         )
 
         return abinit_input

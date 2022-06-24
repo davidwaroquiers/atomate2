@@ -192,7 +192,7 @@ class NonSCFSetGenerator(AbinitInputGenerator):
                     "Structure is provided in non-SCF input set generator but "
                     "is not the same as the one from the previous (SCF) input set."
                 )
-        if nbands_factor is not None:
+        if nband is None:
             nband = previous_abinit_input.get(
                 "nband",
                 previous_abinit_input.structure.num_valence_electrons(
