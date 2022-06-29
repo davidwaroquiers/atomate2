@@ -33,7 +33,6 @@ dependencies = [
     "PyYAML",
     "numpy",
     "click",
-    {abipy = { git = "https://github.com/abinit/abipy.git", branch = "develop"}},
 ]
 
 [[project.optional-dependencies.abinit]]
