@@ -8,28 +8,28 @@ on:
       - main
 
 jobs:
-#  lint:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - uses: actions/setup-python@v3
-#        with:
-#          python-version: '3.10'
-#          cache: pip
-#          cache-dependency-path: pyproject.toml
-#
-#      - name: Install dependencies
-#        run: |
-#          python -m pip install --upgrade pip
-#          pip install .[strict]
-#          pip install .[tests]
-#          pip install .[dev]
-#          pip install .[abinit]
-#
-#      - name: Lint
-#        run: pre-commit run --all-files --show-diff-on-failure
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install .[strict]
+          pip install .[tests]
+          pip install .[dev]
+          pip install .[abinit]
+
+      - name: Lint
+        run: pre-commit run --all-files --show-diff-on-failure
 
   test:
     services:
@@ -41,8 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-#        python-version: ['3.8', '3.9', '3.10']
-        python-version: ['3.8']
+        python-version: ['3.8', '3.9', '3.10']
 
     steps:
       - uses: actions/checkout@v3
@@ -65,8 +64,6 @@ jobs:
 
       - name: Test
         run: pytest --cov=atomate2 --cov-report=xml
-#        env:
-#          ABIPY_PSREPOS_ROOT: tests/test_data/abinit/pseudos
 
       - uses: codecov/codecov-action@v1
         if: matrix.python-version == '3.10' && github.repository == 'materialsproject/atomate2'
@@ -74,23 +71,23 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml
 
-#  docs:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - uses: actions/setup-python@v3
-#        with:
-#          python-version: '3.10'
-#          cache: pip
-#          cache-dependency-path: pyproject.toml
-#
-#      - name: Install dependencies
-#        run: |
-#          python -m pip install --upgrade pip
-#          pip install .[strict]
-#          pip install .[docs]
-#
-#      - name: Build
-#        run: jupyter-book build docs --path-output docs_build
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install .[strict]
+          pip install .[docs]
+
+      - name: Build
+        run: jupyter-book build docs --path-output docs_build
