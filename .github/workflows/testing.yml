@@ -60,13 +60,13 @@ jobs:
           pip install .[tests]
           pip install .[docs]
           pip install .[abinit]
-#          mkdir -p ~/.abinit/pseudos
-#          cp -r tests/test_data/abinit/pseudos/ONCVPSP-PBE-PDv0.4 ~/.abinit/pseudos
+          mkdir -p ~/.abinit/pseudos
+          cp -r tests/test_data/abinit/pseudos/ONCVPSP-PBE-SR-PDv0.4 ~/.abinit/pseudos
 
       - name: Test
         run: pytest --cov=atomate2 --cov-report=xml
-        env:
-          ABIPY_PSREPOS_ROOT: tests/test_data/abinit/pseudos
+#        env:
+#          ABIPY_PSREPOS_ROOT: tests/test_data/abinit/pseudos
 
       - uses: codecov/codecov-action@v1
         if: matrix.python-version == '3.10' && github.repository == 'materialsproject/atomate2'
